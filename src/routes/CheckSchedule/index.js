@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Button, Table, Modal, Layout } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,7 @@ function CheckSchedule() {
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  async function fetchReminders() {
+  const fetchReminders = useCallback(async () => {
     const userCookie = cookie.get("user");
     if (!userCookie) {
       console.error("User data tidak ditemukan di cookie");
@@ -57,9 +57,9 @@ function CheckSchedule() {
       console.error("Error fetching reminders:", error);
       return [];
     }
-  }
+  }, [navigate]);
 
-  async function fetchData() {
+  const fetchData = useCallback(async () => {
     const data = await fetchReminders();
     setReminders(
       data.map((item) => ({
@@ -73,11 +73,11 @@ function CheckSchedule() {
         description: item.description,
       }))
     );
-  }
+  }, [fetchReminders]);
 
   useEffect(() => {
     fetchData();
-  }, [navigate]);
+  }, [fetchData]);
 
   const showDeleteModal = (record) => {
     setRecordToDelete(record);

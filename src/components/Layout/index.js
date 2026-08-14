@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { Layout as BaseLayout, Button, notification } from "antd";
+import { Layout as BaseLayout, notification } from "antd";
 import Header from "../Header";
 import Footer from "../Footer";
 import useLocalData from "../../core/hook/useLocalData";
@@ -12,14 +12,7 @@ function Layout() {
   const location = useLocation()
 
 
-  const [api, contextHolder] = notification.useNotification();
-  const openNotificationWithIcon = (type) => {
-    api[type]({
-      message: 'Notification Title',
-      description:
-        'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
-    })
-  }
+  const [, contextHolder] = notification.useNotification();
 
   const cookieUser = cookie.get("user");
   useEffect(() => {
@@ -32,7 +25,7 @@ function Layout() {
       });
 
     }
-  }, [cookieUser]);
+  }, [cookieUser, userData, dispatch]);
 
   if (!userData) {
     return (

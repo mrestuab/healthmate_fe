@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Space, Table, Tag, message } from 'antd';
+import { Table, message } from 'antd';
 import { getBaseUrl } from '../../../config';
 
 const Admin = () => {

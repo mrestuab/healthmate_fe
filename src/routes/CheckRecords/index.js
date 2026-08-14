@@ -13,47 +13,47 @@ function CheckRecords() {
   const [reminders, setReminders] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  async function fetchReminders() {
-    const userCookie = cookie.get("user");
-    if (!userCookie) {
-      console.error("User data tidak ditemukan di cookie");
-      navigate("/login");
-      return [];
-    }
-
-    try {
-      const user = JSON.parse(userCookie);
-      const userId = user.user_id;
-
-      if (!userId) {
-        console.error("User ID tidak ditemukan dalam cookie");
+  useEffect(() => {
+    async function fetchReminders() {
+      const userCookie = cookie.get("user");
+      if (!userCookie) {
+        console.error("User data tidak ditemukan di cookie");
         navigate("/login");
         return [];
       }
 
-      const response = await fetch(getBaseUrl(`/reminder/history/${userId}`), {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      try {
+        const user = JSON.parse(userCookie);
+        const userId = user.user_id;
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch reminders");
+        if (!userId) {
+          console.error("User ID tidak ditemukan dalam cookie");
+          navigate("/login");
+          return [];
+        }
+
+        const response = await fetch(getBaseUrl(`/reminder/history/${userId}`), {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch reminders");
+        }
+
+        const data = await response.json();
+        console.log("Reminders:", data.data);
+        return data.data;
+      } catch (error) {
+        console.error("Error fetching reminders:", error);
+        return [];
       }
-
-      const data = await response.json();
-      console.log("Reminders:", data.data);
-      return data.data;
-    } catch (error) {
-      console.error("Error fetching reminders:", error);
-      return [];
     }
-  }
 
-  useEffect(() => {
     async function fetchData() {
-      setLoading(true)
+      setLoading(true);
       const data = await fetchReminders().finally(() => setLoading(false));
       setReminders(
         data.map((item) => ({

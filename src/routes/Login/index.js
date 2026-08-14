@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Form, Input, Button, Typography, Modal } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import cookie from '../../core/helpers/cookie';
 import useLocalData from "../../core/hook/useLocalData";
-import { firebaseConfig, firebaseVapidKey, getBaseUrl } from '../../config';
+import { getBaseUrl } from '../../config';
 
 import './style.css'; // Tambahkan file CSS eksternal
 
@@ -12,7 +12,7 @@ const { Title, Link } = Typography;
 function Login() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
-  const { store, dispatch } = useLocalData();
+  const { dispatch } = useLocalData();
   const cookieUser = cookie.get("user");
 
   const onFinish = async (values) => {

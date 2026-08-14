@@ -51,9 +51,7 @@ function AddReminder() {
         }
         console.log("User ID:", userId);
 
-        const reminderDate = values.reminder_time.toDate();
         const reminderTime = values.reminder_time.format("HH:mm:ss");
-        const formattedReminderDate = moment(reminderDate).format("YYYY-MM-DD");
         const formattedReminderTime = `${reminderTime}`;
 
         const payload = {
@@ -82,7 +80,6 @@ function AddReminder() {
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
-                setLoading(false)
             }
 
             const data = await response.json();

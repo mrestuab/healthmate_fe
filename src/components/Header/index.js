@@ -1,8 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, List, notification, Popover } from 'antd';
 import { Link, useNavigate } from "react-router-dom";
-
-import OneSignal from 'react-onesignal';
 
 
 import useLocalData from "../../core/hook/useLocalData";
@@ -40,62 +38,34 @@ function Header() {
   }
 
   const [api, contextHolder] = notification.useNotification();
-  const openNotificationWithIcon = () => {
-    api.info({
-      message: 'Reminder',
-      description: store.notification.message,
-    });
-  };
-
-  const getNotificationList = async () => {
-    const userId = cookie.get("user")?.id;
-    if (!userId) return;
-    const response = await fetch(getBaseUrl(`/notification/${userId}`), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const result = await response.json();
-    setNotif(result);
-  };
-
 
   const cookieUser = cookie.get("user");
-  // useEffect(() => {
-  //   if (cookieUser && !userData) {
-  //     dispatch({
-  //       type: "update",
-  //       name: "userData",
-  //       value: JSON.parse(cookieUser),
-  //     });
-  //   }
-  // }, [cookieUser]);
-
+  const cookieUserId = cookieUser?.id || cookieUser?.user_id;
 
   useEffect(() => {
-    // Ensure this code runs only on the client side
-    // if (typeof window !== 'undefined') {
-    //   OneSignal.init({
-    //     appId: '25850dc0-06ac-45c7-bbfb-3681b2a4450b',
-    //     // You can add other initialization options here
-    //     notifyButton: {
-    //       enable: true,
-    //     },
-    //     // Uncomment the below line to run on localhost. See: https://documentation.onesignal.com/docs/local-testing
-    //     // allowLocalhostAsSecureOrigin: true
-    //   });
-    // }
+    const getNotificationList = async () => {
+      if (!cookieUserId) return;
+      const response = await fetch(getBaseUrl(`/notification/${cookieUserId}`), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await response.json();
+      setNotif(result);
+    };
 
-  }, [cookieUser]);
-
-  useMemo(() => {
-    getNotificationList()
-  }, [cookieUser])
+    getNotificationList();
+  }, [cookieUserId]);
 
   useEffect(() => {
-    if (store.notification) openNotificationWithIcon()
-  }, [store.notification])
+    if (store.notification) {
+      api.info({
+        message: 'Reminder',
+        description: store.notification.message,
+      });
+    }
+  }, [store.notification, api]);
   return (
     <header>
       {contextHolder}
@@ -113,7 +83,7 @@ function Header() {
                 dataSource={notif}
                 renderItem={(item) => (
                   <List.Item
-                    actions={[<a key="list-loadmore-edit">edit</a>, <a key="list-loadmore-more">more</a>]}
+                    actions={[<a key="list-loadmore-edit" href="#!">edit</a>, <a key="list-loadmore-more" href="#!">more</a>]}
                   >
                     <List.Item.Meta
                       // avatar={<Avatar src={item.picture.large} />}
@@ -134,7 +104,7 @@ function Header() {
               </Popover>
 
               {
-                userData?.user_id != 1 && (
+                Number(userData?.user_id) !== 1 && (
                   <>
                     <Link to="/dashboard">Home</Link>
                     <Link to="/profile">Profile</Link>

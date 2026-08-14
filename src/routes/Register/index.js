@@ -8,23 +8,7 @@ const { Title } = Typography;
 
 function Register() {
   const navigate = useNavigate();
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const handlePhoneChange = (e) => {
-    const value = e.target.value;
-
-    const phoneRegex = /^62[0-9]{9,13}$/;
-
-    if (!phoneRegex.test(value)) {
-      setError('Nomor telepon harus dimulai dengan 62 dan memiliki 9-13 digit.');
-    } else {
-      setError('');
-    }
-
-    setPhoneNumber(value);
-  };
 
   const onFinish = async (values) => {
     const payload = {
@@ -114,7 +98,7 @@ function Register() {
               },
             ]}
           >
-            <Input onChange={handlePhoneChange} placeholder="Contoh: 6281234567890" />
+            <Input placeholder="Contoh: 6281234567890" />
           </Form.Item>
 
           <Form.Item

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import useLocalData from '../core/hook/useLocalData';
 import cookie from '../core/helpers/cookie';
 
 const GuestRoute = ({ children }) => {
